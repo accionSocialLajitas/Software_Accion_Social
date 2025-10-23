@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Inicio de Legajo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Formulario de Inicio de Legajo</h3>
+        <form th:action="@{/guardar}" th:object="${legajo}" method="post">
+			
+			<div class="row">
+			    <div class="col-md-6 mb-3">
+			        <label for="origen" class="form-label">Origen</label>
+			        <select class="form-select" id="origen" th:field="*{origen}">
+			            <option value="">Seleccione...</option>
+			            <option value="Presencial">Presencial</option>
+			            <option value="Derivacion Interna">Derivacion Interna</option>
+						<option value="Derivacion Externa">Derivacion Externa</option>
+			        </select>
+			    </div>
+
+			</div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" th:field="*{apellido}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="dni" class="form-label">DNI</label>
+                    <input type="text" class="form-control" id="dni" th:field="*{dni}">
+                </div>
+				
+				<div class="col-md-6 mb-3">
+                    <label for="fecha_nac" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha_nac" th:field="*{fecha_nac}">
+                </div>
+				
+				<div class="col-md-6 mb-3">
+                    <label for="telefono" class="form-label">Telefono</label>
+                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">E-Mail</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="adulto_mayor" class="form-label">¿Es adulto mayor?</label>
+                    <select class="form-select" id="adulto_mayor" th:field="*{adulto_mayor}">
+                        <option value="">Seleccione...</option>
+                        <option value="Si">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="discapacidad" class="form-label">¿Tiene discapacidad?</label>
+                    <select class="form-select" id="discapacidad" th:field="*{discapacidad}">
+                        <option value="">Seleccione...</option>
+                        <option value="Si">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="estado_civil" class="form-label">Estado Civil</label>
+                    <select class="form-select" id="estado_civil" th:field="*{estado_civil}">
+                        <option value="">Seleccione...</option>
+                        <option value="Soltero">Soltero/a</option>
+                        <option value="Casado">Casado/a</option>
+                        <option value="Viudo">Viudo/a</option>
+                    </select>
+                </div>
+
+                
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="cant_hijos" class="form-label">Cantidad de Hijos</label>
+                    <input type="number" class="form-control" id="cant_hijos" min="0" th:field="*{cant_hijos}">
+                </div>
+
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
