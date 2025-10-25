@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Direcciones</title>
+</head>
+<body>
+    <h2>Lista de Direcciones</h2>
+    
+    <div>
+        <a th:href="@{/formulario-direccion}">Nueva Dirección</a>
+    </div>
+    
+    <div th:if="${Direcciones != null and !Direcciones.isEmpty()}">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Localidad</th>
+                    <th>Calle</th>
+                    <th>Número de Casa</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="direccion : ${Direcciones}">
+                    <td th:text="${direccion.id_direccion}"></td>
+                    <td th:text="${direccion.localidad}"></td>
+                    <td th:text="${direccion.calle}"></td>
+                    <td th:text="${direccion.numero_casa}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div th:if="${Direcciones == null or Direcciones.isEmpty()}">
+        <p>No hay direcciones registradas.</p>
+    </div>
+    
+    <div>
+        <a th:href="@{/}">Volver al inicio</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Dirección</title>
+</head>
+<body>
+    <h2>Formulario de Dirección</h2>
+    <form th:action="@{/guardar-direccion}" th:object="${direccion}" method="post">
+        
+        <div>
+            <label for="localidad">Localidad:</label>
+            <input type="text" id="localidad" th:field="*{localidad}" required>
+        </div>
+        
+        <div>
+            <label for="calle">Calle:</label>
+            <input type="text" id="calle" th:field="*{calle}" required>
+        </div>
+        
+        <div>
+            <label for="numero_casa">Número de Casa:</label>
+            <input type="text" id="numero_casa" th:field="*{numero_casa}" required>
+        </div>
+        
+        <div>
+            <button type="submit">Guardar Dirección</button>
+        </div>
+    </form>
+    
+    <div>
+        <a th:href="@{/mostrar-direcciones}">Ver Lista de Direcciones</a>
+    </div>
+</body>
+</html>

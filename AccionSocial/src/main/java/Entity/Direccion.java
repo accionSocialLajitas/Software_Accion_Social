@@ -5,29 +5,32 @@ import jakarta.persistence.*;
 
 @Entity
 public class Direccion {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_direccion;
     private String localidad;
     private String calle;
-    private String casaN;
-
+    private String numero_casa;
+    
     public Direccion() {
+        super();
     }
 
-    public Direccion(String localidad, String calle, String casaN) {
+    public Direccion(Long id_direccion, String localidad, String calle, String numero_casa) {
+        super();
+        this.id_direccion = id_direccion;
         this.localidad = localidad;
         this.calle = calle;
-        this.casaN = casaN;
+        this.numero_casa = numero_casa;
     }
 
-   
-    public Long getId() {
-        return id;
+    public Long getId_direccion() {
+        return id_direccion;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId_direccion(Long id_direccion) {
+        this.id_direccion = id_direccion;
     }
 
     public String getLocalidad() {
@@ -46,12 +49,11 @@ public class Direccion {
         this.calle = calle;
     }
 
-    public String getCasaN() {
-        return casaN;
+    public String getNumero_casa() {
+        return numero_casa;
     }
 
-    public void setCasaN(String casaN) {
-        this.casaN = casaN;
+    public void setNumero_casa(String numero_casa) {
+        this.numero_casa = numero_casa;
     }
-
 }
