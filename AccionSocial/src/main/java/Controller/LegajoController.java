@@ -27,7 +27,9 @@ public class LegajoController {
 	 }
 	        @GetMapping("/formulario")  
 	        public String GuardarDatos(Model model) {
-	            model.addAttribute("legajo", new Legajo());
+	            Legajo legajo = new Legajo();
+	            legajo.setEstado("Pendiente");
+	            model.addAttribute("legajo", legajo);
 	            return "Vistas/formulario_legajo";
 	        }
 	

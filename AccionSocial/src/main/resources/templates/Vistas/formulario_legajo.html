@@ -22,6 +22,18 @@
 						<option value="Derivacion Externa">Derivacion Externa</option>
 			        </select>
 			    </div>
+				
+				<div class="col-md-6 mb-3">
+				    <label for="categoria" class="form-label">Categoria</label>
+				    <select class="form-select" id="categoria" th:field="*{categoria}">
+				        <option value="">Seleccione...</option>
+				        <option value="Asistencia Alimentaria">Asistencia Alimentaria</option>
+				        <option value="Medicamentos">Medicamentos</option>
+						<option value="Emergencia Climática">Emergencia Climática</option>
+						<option value="Violencia Familiar">Violencia Familiar</option>
+						<option value="Otros">Otros</option>
+				    </select>
+				</div>
 
 			</div>
 
@@ -50,7 +62,7 @@
 				
 				<div class="col-md-6 mb-3">
                     <label for="telefono" class="form-label">Telefono</label>
-                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                    <input type="text" class="form-control" id="telefono" th:field="*{telefono}" required>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -97,10 +109,16 @@
                     <label for="cant_hijos" class="form-label">Cantidad de Hijos</label>
                     <input type="number" class="form-control" id="cant_hijos" min="0" th:field="*{cant_hijos}">
                 </div>
+				
+				<div class="col-md-4 mb-3">
+				    <input type="hidden" th:field="*{estado}">
+				</div>
+				
+
 
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary px-5">Guardar</button>
+                <button type="submit" class="btn btn-primary px-5">Siguiente</button>
             </div>
         </form>
     </div>
