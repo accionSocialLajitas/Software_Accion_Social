@@ -1,35 +1,55 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario de Dirección</title>
+    <title>Ingrese direccion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>Formulario de Dirección</h2>
-    <form th:action="@{/guardar-direccion}" th:object="${direccion}" method="post">
-        
-        <div>
-            <label for="localidad">Localidad:</label>
-            <input type="text" id="localidad" th:field="*{localidad}" required>
-        </div>
-        
-        <div>
-            <label for="calle">Calle:</label>
-            <input type="text" id="calle" th:field="*{calle}" required>
-        </div>
-        
-        <div>
-            <label for="numero_casa">Número de Casa:</label>
-            <input type="text" id="numero_casa" th:field="*{numero_casa}" required>
-        </div>
-        
-        <div>
-            <button type="submit">Guardar Dirección</button>
-        </div>
-    </form>
-    
-    <div>
-        <a th:href="@{/mostrar-direcciones}">Ver Lista de Direcciones</a>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Ingrese direccion</h3>
+        <form th:action="@{/guardar-paso2}" th:object="${direccion}" method="post">
+			
+            <div class="row">
+                <div class="col-md-6 mb-3">
+					
+					<label for="localidad" class="form-label">Localidad:</label>
+			        <select class="form-select" id="localidad" th:field="*{localidad}">
+			            <option value="">Seleccione...</option>
+			            <option value="Las Lajitas">Las Lajitas</option>
+			            <option value="Rio de Valle">Rio de Valle</option>
+						<option value="Piquete Cabado">Piquete Cabado</option>
+						<option value="Parajes Ruta Juana Azurduy">Parajes Ruta Juana Azurduy</option>
+						<option value="Parajes Ruta Provincial 5">Parajes Ruta Provincial 5</option>
+			        </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+					<div>
+		            <label for="calle">Calle:</label>
+		            <input type="text" id="calle" th:field="*{calle}" required>
+		        </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="numero_casa" class="form-label">Numero:</label>
+                    <input type="number" class="form-control" id="numero_casa" min="0" th:field="*{numero_casa}">
+                </div>
+				
+				
+				
+
+
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5">Siguiente</button>
+            </div>
+        </form>
     </div>
+</div>
 </body>
 </html>

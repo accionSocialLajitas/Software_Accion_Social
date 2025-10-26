@@ -6,7 +6,7 @@ import Entity.Legajo;
 
 public interface InterLegajo {
 
-	public void Guardar(Legajo legajo);
+	public Legajo Guardar(Legajo legajo);
 	
 	public void Eliminar(Legajo legajo);
 	

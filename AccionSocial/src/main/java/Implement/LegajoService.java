@@ -17,8 +17,8 @@ public class LegajoService implements InterLegajo {
 
 
 @Override
-public void Guardar(Legajo legajo) {
-	LegajoRepository.save(legajo);
+public Legajo Guardar(Legajo legajo) {
+	return LegajoRepository.save(legajo);
 }
 
 

@@ -29,7 +29,7 @@ public class DireccionController {
 
     @PostMapping("/guardar-direccion")
     public String GuardarDireccion(Direccion direccion, Model model) {
-        DireccionService.Guardar(direccion);
+    	DireccionService.Guardar(direccion);
         return "redirect:/mostrar-direcciones";
     }
 }
