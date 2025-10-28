@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ingrese Ubicacion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Ingrese Ubicacion</h3>
+        
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+        
+        <form th:action="@{/guardarubicacion}" th:object="${ubicacion}" method="post">
+            
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="archivo" class="form-label">Archivo</label>
+                    <input type="text" class="form-control" id="archivo" th:field="*{archivo}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="carpeta" class="form-label">Carpeta</label>
+                    <input type="text" class="form-control" id="carpeta" th:field="*{carpeta}" required>
+                </div>
+            </div>
+
+            <div class="row">
+
+
+                <div class="col-md-6 mb-3">
+                    <label for="folio" class="form-label">Folio</label>
+                    <input type="text" class="form-control" id="folio" th:field="*{folio}" required>
+                </div>
+            </div>
+
+
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5">Guardar</button>
+                <a th:href="@{/mostrarlistaubicacion}" class="btn btn-secondary px-5 ms-2">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
