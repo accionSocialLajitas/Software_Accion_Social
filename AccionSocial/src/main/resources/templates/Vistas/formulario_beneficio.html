@@ -14,7 +14,7 @@
             <span th:text="${error}"></span>
         </div>
         
-        <!-- Radio buttons para seleccionar tipo -->
+        
         <div class="row mb-4">
             <div class="col-md-12">
                 <label class="form-label"><strong>Tipo de Beneficio:</strong></label>
@@ -46,7 +46,7 @@
 			    </div>
 
 			    <div class="row">
-			        <!-- Mostrar Cantidad o Monto según el tipo -->
+			        
 			        <div th:if="${tipo == 'cantidad'}" class="col-md-6 mb-3">
 			            <label for="cantidadDisponible" class="form-label">Ingrese Cantidad</label>
 			            <input type="number" class="form-control" id="cantidadDisponible" min="0" 
