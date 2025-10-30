@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Documentación</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="m-0">Documentación Registrada</h3>
+            <a th:href="@{/formulariodocumentacion}" class="btn btn-primary">+ Nueva Documentación</a>
+        </div>
+
+        <div th:if="${Documentacion != null and !Documentacion.isEmpty()}">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo de Documento</th>
+                            <th>Número</th>
+                            <th>Fecha de Ingreso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="d : ${Documentacion}">
+                            <td th:text="${d.id}"></td>
+                            <td>
+                                <span th:if="${d.tipoDocumento == 'DNI'}" class="badge bg-primary" th:text="${d.tipoDocumento}"></span>
+                                <span th:if="${d.tipoDocumento == 'Pasaporte'}" class="badge bg-info" th:text="${d.tipoDocumento}"></span>
+                                <span th:if="${d.tipoDocumento == 'Cédula'}" class="badge bg-success" th:text="${d.tipoDocumento}"></span>
+                                <span th:if="${d.tipoDocumento == 'Licencia de Conducir'}" class="badge bg-warning" th:text="${d.tipoDocumento}"></span>
+                                <span th:if="${d.tipoDocumento == 'Certificado de Nacimiento'}" class="badge bg-secondary" th:text="${d.tipoDocumento}"></span>
+                                <span th:if="${d.tipoDocumento == 'Certificado de Matrimonio'}" class="badge bg-dark" th:text="${d.tipoDocumento}"></span>
+                                <span th:if="${d.tipoDocumento == 'Otro'}" class="badge bg-light text-dark" th:text="${d.tipoDocumento}"></span>
+                            </td>
+                            <td th:text="${d.numero}"></td>
+                            <td th:text="${#temporals.format(d.fechaIngreso, 'dd/MM/yyyy')}"></td>
+                            <td>
+                                <a th:href="@{/editardocumentacion/{id}(id=${d.id})}" class="btn btn-sm btn-warning">Editar</a>
+                                <a th:href="@{/eliminardocumentacion/{id}(id=${d.id})}" class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('¿Seguro que desea eliminar esta documentación?');">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div th:if="${Documentacion == null or Documentacion.isEmpty()}" class="text-center text-muted mt-4">
+            <p>No hay documentación registrada.</p>
+        </div>
+
+        <div class="text-center mt-3">
+            <a th:href="@{/}" class="btn btn-secondary">Volver al inicio</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
