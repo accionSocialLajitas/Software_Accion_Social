@@ -36,7 +36,6 @@ public class TurnoService implements InterTurno {
 
 	@Override
 	public Optional<Turno> Busquedaporid(Long id) {
-		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
 

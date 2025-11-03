@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Legajo - Acción Social</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .navbar-brand { font-size: 1.4rem; font-weight: 600; }
+        .nav-link { transition: all 0.3s ease; border-radius: 5px; margin: 0 2px; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+        .dropdown-menu { border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .dropdown-item:hover { background-color: #f8f9fa; padding-left: 1.5rem; }
+        .card { border: none; border-radius: 10px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; }
+        .btn { border-radius: 6px; transition: all 0.3s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav th:replace="~{Vistas/menu :: menu}"></nav>
+    
+<div class="container mt-4">
+    <!-- Mensajes -->
+    <div th:if="${mensaje != null or param.mensaje != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje != null ? mensaje : param.mensaje[0]}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error != null or param.error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error != null ? error : param.error[0]}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Información del Legajo -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="m-0">Información del Legajo</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Nombre:</strong> <span th:text="${legajo.nombre}"></span></p>
+                    <p><strong>Apellido:</strong> <span th:text="${legajo.apellido}"></span></p>
+                    <p><strong>DNI:</strong> <span th:text="${legajo.dni}"></span></p>
+                    <p><strong>Teléfono:</strong> <span th:text="${legajo.telefono}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${legajo.email}"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Estado Civil:</strong> <span th:text="${legajo.estado_civil}"></span></p>
+                    <p><strong>Cantidad de Hijos:</strong> <span th:text="${legajo.cant_hijos}"></span></p>
+                    <p><strong>Adulto Mayor:</strong> <span th:text="${legajo.adulto_mayor}"></span></p>
+                    <p><strong>Discapacidad:</strong> <span th:text="${legajo.discapacidad}"></span></p>
+                    <p><strong>Estado:</strong> 
+                        <span th:if="${legajo.estado == 'Aprobado'}" class="badge bg-success" th:text="${legajo.estado}"></span>
+                        <span th:if="${legajo.estado == 'Pendiente'}" class="badge bg-warning" th:text="${legajo.estado}"></span>
+                        <span th:if="${legajo.estado != 'Aprobado' and legajo.estado != 'Pendiente'}" class="badge bg-secondary" th:text="${legajo.estado}"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="row mt-3" th:if="${legajo.direccion != null}">
+                <div class="col-12">
+                    <p><strong>Dirección:</strong> 
+                        <span th:text="${legajo.direccion.calle}"></span> 
+                        <span th:text="${legajo.direccion.numero_casa}"></span>, 
+                        <span th:text="${legajo.direccion.localidad}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beneficios del Legajo -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="m-0">Beneficios Asignados</h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${legajo.beneficios != null and !legajo.beneficios.isEmpty()}">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Monto</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="beneficio : ${legajo.beneficios}">
+                                <td th:text="${beneficio.nombre}"></td>
+                                <td th:text="${beneficio.cantidadDisponible}"></td>
+                                <td>
+                                    <span th:if="${beneficio.monto != null}">
+                                        $<span th:text="${#numbers.formatDecimal(beneficio.monto, 0, 'COMMA', 2, 'POINT')}"></span>
+                                    </span>
+                                    <span th:if="${beneficio.monto == null}">N/A</span>
+                                </td>
+                                <td th:text="${beneficio.tipoBeneficio}"></td>
+                                <td th:text="${beneficio.descripcion}"></td>
+                                <td>
+                                    <span th:if="${beneficio.estado == 'Asignado'}" class="badge bg-info" th:text="${beneficio.estado}"></span>
+                                    <span th:if="${beneficio.estado != 'Asignado'}" class="badge bg-secondary" th:text="${beneficio.estado}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:if="${legajo.beneficios == null or legajo.beneficios.isEmpty()}" class="text-center text-muted">
+                <p>Este legajo no tiene beneficios asignados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentación del Legajo -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="m-0">Documentación Asignada</h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${legajo.documentaciones != null and !legajo.documentaciones.isEmpty()}">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tipo de Documento</th>
+                                <th>Número</th>
+                                <th>Fecha de Ingreso</th>
+                                <th>Ubicación Física</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="documentacion : ${legajo.documentaciones}">
+                                <td>
+                                    <span th:if="${documentacion.tipoDocumento == 'DNI'}" class="badge bg-primary" th:text="${documentacion.tipoDocumento}"></span>
+                                    <span th:if="${documentacion.tipoDocumento == 'Pasaporte'}" class="badge bg-info" th:text="${documentacion.tipoDocumento}"></span>
+                                    <span th:if="${documentacion.tipoDocumento == 'Cédula'}" class="badge bg-success" th:text="${documentacion.tipoDocumento}"></span>
+                                    <span th:if="${documentacion.tipoDocumento == 'Licencia de Conducir'}" class="badge bg-warning" th:text="${documentacion.tipoDocumento}"></span>
+                                    <span th:if="${documentacion.tipoDocumento == 'Certificado de Nacimiento'}" class="badge bg-secondary" th:text="${documentacion.tipoDocumento}"></span>
+                                    <span th:if="${documentacion.tipoDocumento == 'Certificado de Matrimonio'}" class="badge bg-dark" th:text="${documentacion.tipoDocumento}"></span>
+                                    <span th:if="${documentacion.tipoDocumento != null and documentacion.tipoDocumento != 'DNI' and documentacion.tipoDocumento != 'Pasaporte' and documentacion.tipoDocumento != 'Cédula' and documentacion.tipoDocumento != 'Licencia de Conducir' and documentacion.tipoDocumento != 'Certificado de Nacimiento' and documentacion.tipoDocumento != 'Certificado de Matrimonio'}" class="badge bg-light text-dark" th:text="${documentacion.tipoDocumento}"></span>
+                                </td>
+                                <td th:text="${documentacion.numero}"></td>
+                                <td th:text="${#temporals.format(documentacion.fechaIngreso, 'dd/MM/yyyy')}"></td>
+                                <td>
+                                    <span th:if="${documentacion.ubicacion != null}">
+                                        <i class="bi bi-folder me-1"></i>
+                                        <span th:if="${documentacion.ubicacion.archivo != null and !documentacion.ubicacion.archivo.isEmpty()}">
+                                            <strong>Archivo:</strong> <span th:text="${documentacion.ubicacion.archivo}"></span>
+                                        </span>
+                                        <span th:if="${documentacion.ubicacion.carpeta != null and !documentacion.ubicacion.carpeta.isEmpty()}">
+                                            <span th:if="${documentacion.ubicacion.archivo != null and !documentacion.ubicacion.archivo.isEmpty()}"> | </span>
+                                            <strong>Carpeta:</strong> <span th:text="${documentacion.ubicacion.carpeta}"></span>
+                                        </span>
+                                        <span th:if="${documentacion.ubicacion.folio != null and !documentacion.ubicacion.folio.isEmpty()}">
+                                            <span th:if="${(documentacion.ubicacion.archivo != null and !documentacion.ubicacion.archivo.isEmpty()) or (documentacion.ubicacion.carpeta != null and !documentacion.ubicacion.carpeta.isEmpty())}"> | </span>
+                                            <strong>Folio:</strong> <span th:text="${documentacion.ubicacion.folio}"></span>
+                                        </span>
+                                    </span>
+                                    <span th:if="${documentacion.ubicacion == null}" class="text-muted">
+                                        <i class="bi bi-dash-circle me-1"></i>Sin ubicación física
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:if="${legajo.documentaciones == null or legajo.documentaciones.isEmpty()}" class="text-center text-muted">
+                <p>Este legajo no tiene documentación asignada.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="card shadow mb-4">
+        <div class="card-body text-center">
+            <a th:href="@{/asignarbeneficio/{id}(id=${legajo.id})}" class="btn btn-success btn-lg me-3">
+                <i class="bi bi-gift me-2"></i>Asignar Beneficio
+            </a>
+            <a th:href="@{/formulariodocumentacion?legajoId={id}(id=${legajo.id})}" class="btn btn-info btn-lg me-3">
+                <i class="bi bi-file-earmark-plus me-2"></i>Crear Documentación
+            </a>
+            <a th:href="@{/historial/{id}(id=${legajo.id})}" class="btn btn-secondary btn-lg me-3">
+                <i class="bi bi-clock-history me-2"></i>Ver Historial
+            </a>
+            <a th:href="@{/editarlegajo/{id}(id=${legajo.id})}" class="btn btn-warning btn-lg me-3">
+                <i class="bi bi-pencil me-2"></i>Editar Legajo
+            </a>
+            <a th:href="@{/mostrarlista}" class="btn btn-secondary btn-lg">
+                <i class="bi bi-arrow-left me-2"></i>Volver a la Lista
+            </a>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer th:replace="~{Vistas/menu :: footer}"></footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

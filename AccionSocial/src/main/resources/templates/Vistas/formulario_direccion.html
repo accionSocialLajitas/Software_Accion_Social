@@ -1,16 +1,31 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Ingrese direccion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Dirección - Acción Social</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .navbar-brand { font-size: 1.4rem; font-weight: 600; }
+        .nav-link { transition: all 0.3s ease; border-radius: 5px; margin: 0 2px; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+        .dropdown-menu { border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .dropdown-item:hover { background-color: #f8f9fa; padding-left: 1.5rem; }
+        .card { border: none; border-radius: 10px; }
+        .btn { border-radius: 6px; transition: all 0.3s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+    </style>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
+    <!-- Navigation -->
+    <nav th:replace="~{Vistas/menu :: menu}"></nav>
+    
+<div class="container mt-4">
     <div class="card shadow p-4">
         <h3 class="text-center mb-4">Ingrese direccion</h3>
         <form th:action="@{/guardar-paso2}" th:object="${direccion}" method="post">
+			<input type="hidden" th:field="*{id_direccion}">
 			
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -27,10 +42,8 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-					<div>
-		            <label for="calle">Calle:</label>
-		            <input type="text" id="calle" th:field="*{calle}" required>
-		        </div>
+                    <label for="calle" class="form-label">Calle:</label>
+                    <input type="text" class="form-control" id="calle" th:field="*{calle}" required>
                 </div>
             </div>
 
@@ -51,5 +64,11 @@
         </form>
     </div>
 </div>
+
+    <!-- Footer -->
+    <footer th:replace="~{Vistas/menu :: footer}"></footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

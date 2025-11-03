@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignar Beneficio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="m-0">Asignar Beneficio a Legajo</h4>
+        </div>
+        <div class="card-body">
+            <!-- Información del Legajo -->
+            <div class="alert alert-info">
+                <strong>Legajo:</strong> <span th:text="${legajo.nombre + ' ' + legajo.apellido}"></span> - 
+                <strong>DNI:</strong> <span th:text="${legajo.dni}"></span>
+            </div>
+
+            <!-- Mensajes -->
+            <div th:if="${mensaje != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Formulario de asignación -->
+            <div th:if="${beneficiosDisponibles != null and !beneficiosDisponibles.isEmpty()}">
+                <form th:action="@{/asignarbeneficio/{id}(id=${legajo.id})}" method="post">
+                    <div class="mb-3">
+                        <label for="beneficioId" class="form-label"><strong>Seleccionar Beneficio:</strong></label>
+                        <select class="form-select" id="beneficioId" name="beneficioId" required onchange="actualizarCampos()">
+                            <option value="">-- Seleccione un beneficio --</option>
+                            <option th:each="beneficio : ${beneficiosDisponibles}" 
+                                    th:value="${beneficio.id}"
+                                    th:data-tipo="${beneficio.tipoBeneficio}"
+                                    th:data-cantidad="${beneficio.cantidadDisponible}"
+                                    th:data-monto="${beneficio.monto}"
+                                    th:text="${beneficio.nombre + ' (' + (beneficio.tipoBeneficio != null and (beneficio.tipoBeneficio == 'fondos' or beneficio.tipoBeneficio == 'monto') ? 'Monto disponible: $' + #numbers.formatDecimal(beneficio.monto, 0, 'COMMA', 2, 'POINT') : 'Cant. disponible: ' + beneficio.cantidadDisponible) + ')'}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div id="divCantidad" class="col-md-6" style="display: none;">
+                            <label for="cantidad" class="form-label"><strong>Cantidad a Asignar al Legajo:</strong></label>
+                            <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" step="1" placeholder="Ingrese la cantidad deseada">
+                            <small class="form-text text-muted" id="cantidadHint">Ingrese la cantidad exacta que desea asignar</small>
+                        </div>
+                        <div id="divMonto" class="col-md-6" style="display: none;">
+                            <label for="monto" class="form-label"><strong>Monto a Asignar al Legajo:</strong></label>
+                            <input type="number" class="form-control" id="monto" name="monto" min="0.01" step="0.01" placeholder="Ingrese el monto deseado">
+                            <small class="form-text text-muted" id="montoHint">Ingrese el monto exacto que desea asignar</small>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-3" id="infoBeneficio" style="display: none;">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Cantidad Disponible</th>
+                                    <th>Monto Total</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="beneficioInfo">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg me-2">Asignar Beneficio</button>
+                        <a th:href="@{/detallelegajo/{id}(id=${legajo.id})}" class="btn btn-secondary btn-lg">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+
+            <div th:if="${beneficiosDisponibles == null or beneficiosDisponibles.isEmpty()}" class="alert alert-warning text-center">
+                <p>No hay beneficios disponibles para asignar.</p>
+                <a th:href="@{/detallelegajo/{id}(id=${legajo.id})}" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const beneficios = /*[[${beneficiosDisponibles}]]*/ [];
+    console.log('Beneficios disponibles:', beneficios);
+    
+    function actualizarCampos() {
+        const select = document.getElementById('beneficioId');
+        const beneficioId = select.value;
+        const infoDiv = document.getElementById('infoBeneficio');
+        const infoBody = document.getElementById('beneficioInfo');
+        const cantidadInput = document.getElementById('cantidad');
+        const montoInput = document.getElementById('monto');
+        const divCantidad = document.getElementById('divCantidad');
+        const divMonto = document.getElementById('divMonto');
+        const montoHint = document.getElementById('montoHint');
+        
+        console.log('Beneficio seleccionado ID:', beneficioId);
+        
+        if (beneficioId) {
+            // Buscar beneficio por ID (puede ser número o string)
+            const beneficio = beneficios.find(b => {
+                const bId = b.id ? (typeof b.id === 'string' ? parseInt(b.id) : b.id) : null;
+                const selId = typeof beneficioId === 'string' ? parseInt(beneficioId) : beneficioId;
+                return bId === selId;
+            });
+            
+            console.log('Beneficio encontrado:', beneficio);
+            
+            if (beneficio) {
+                infoBody.innerHTML = `
+                    <tr>
+                        <td>${beneficio.nombre || 'N/A'}</td>
+                        <td>${beneficio.tipoBeneficio || 'N/A'}</td>
+                        <td>${beneficio.cantidadDisponible != null ? beneficio.cantidadDisponible : 'N/A'}</td>
+                        <td>$${beneficio.monto != null ? parseFloat(beneficio.monto).toFixed(2) : 'N/A'}</td>
+                        <td>${beneficio.descripcion || 'Sin descripción'}</td>
+                    </tr>
+                `;
+                infoDiv.style.display = 'block';
+                
+                // Determinar tipo de beneficio
+                const esBeneficioMonto = beneficio.tipoBeneficio === 'fondos' || beneficio.tipoBeneficio === 'monto';
+                console.log('Es beneficio monto:', esBeneficioMonto);
+                
+                if (esBeneficioMonto) {
+                    // Beneficio de tipo monto: mostrar solo monto, ocultar cantidad
+                    divCantidad.style.display = 'none';
+                    divMonto.style.display = 'block';
+                    divMonto.className = 'col-md-12';
+                    
+                    cantidadInput.removeAttribute('required');
+                    cantidadInput.removeAttribute('name');
+                    cantidadInput.value = '';
+                    
+                    montoInput.setAttribute('required', 'required');
+                    montoInput.setAttribute('name', 'monto');
+                    const montoMax = beneficio.monto != null ? parseFloat(beneficio.monto) : 0;
+                    montoInput.setAttribute('max', montoMax);
+                    montoInput.setAttribute('min', '0.01');
+                    montoInput.placeholder = 'Ingrese el monto que desea asignar';
+                    montoHint.textContent = 'Ingrese el monto exacto que desea asignar al legajo (máximo disponible: $' + montoMax.toFixed(2) + ')';
+                    montoInput.value = '';
+                    console.log('Mostrando campo monto');
+                } else {
+                    // Beneficio de tipo cantidad: mostrar solo cantidad, ocultar monto
+                    divCantidad.style.display = 'block';
+                    divMonto.style.display = 'none';
+                    divCantidad.className = 'col-md-12';
+                    
+                    cantidadInput.setAttribute('required', 'required');
+                    cantidadInput.setAttribute('name', 'cantidad');
+                    const cantMax = beneficio.cantidadDisponible != null ? parseInt(beneficio.cantidadDisponible) : 0;
+                    cantidadInput.setAttribute('max', cantMax);
+                    cantidadInput.setAttribute('min', '1');
+                    cantidadInput.placeholder = 'Ingrese la cantidad deseada';
+                    cantidadInput.value = '';
+                    
+                    const cantidadHint = document.getElementById('cantidadHint');
+                    if (cantidadHint) {
+                        cantidadHint.textContent = 'Ingrese la cantidad exacta que desea asignar (máximo disponible: ' + cantMax + ')';
+                    }
+                    
+                    // Ocultar y limpiar campo de monto para beneficios de tipo cantidad
+                    montoInput.removeAttribute('required');
+                    montoInput.removeAttribute('name');
+                    montoInput.value = '';
+                    console.log('Mostrando solo campo cantidad');
+                }
+            } else {
+                console.error('Beneficio no encontrado para ID:', beneficioId);
+                divCantidad.style.display = 'none';
+                divMonto.style.display = 'none';
+                infoDiv.style.display = 'none';
+            }
+        } else {
+            infoDiv.style.display = 'none';
+            divCantidad.style.display = 'none';
+            divMonto.style.display = 'none';
+            cantidadInput.removeAttribute('required');
+            montoInput.removeAttribute('required');
+        }
+    }
+    
+    // Validar antes de enviar el formulario
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const select = document.getElementById('beneficioId');
+        const beneficioId = select.value;
+        
+        if (!beneficioId) {
+            e.preventDefault();
+            alert('Por favor seleccione un beneficio');
+            return false;
+        }
+        
+        const beneficio = beneficios.find(b => {
+            const bId = b.id ? (typeof b.id === 'string' ? parseInt(b.id) : b.id) : null;
+            const selId = typeof beneficioId === 'string' ? parseInt(beneficioId) : beneficioId;
+            return bId === selId;
+        });
+        
+        if (beneficio) {
+            const esBeneficioMonto = beneficio.tipoBeneficio === 'fondos' || beneficio.tipoBeneficio === 'monto';
+            const montoInput = document.getElementById('monto');
+            const cantidadInput = document.getElementById('cantidad');
+            
+            if (esBeneficioMonto) {
+                const monto = parseFloat(montoInput.value);
+                if (!monto || monto <= 0) {
+                    e.preventDefault();
+                    alert('Por favor ingrese un monto mayor a 0');
+                    montoInput.focus();
+                    return false;
+                }
+            } else {
+                const cantidad = parseInt(cantidadInput.value);
+                if (!cantidad || cantidad <= 0) {
+                    e.preventDefault();
+                    alert('Por favor ingrese una cantidad mayor a 0');
+                    cantidadInput.focus();
+                    return false;
+                }
+                // Para beneficios de tipo cantidad, asegurar que monto no se envíe o sea 0
+                // El campo de monto está oculto, así que no se enviará en el formulario
+            }
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
+
