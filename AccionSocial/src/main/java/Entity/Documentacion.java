@@ -12,17 +12,29 @@ public class Documentacion {
     private String tipoDocumento;
     private String numero;
     private LocalDate fechaIngreso;
+    private String estado; // "SOLICITADO" o "GUARDADO"
+    
+    @ManyToOne
+    @JoinColumn(name = "id_legajo")
+    private Legajo legajo;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_ubicacion")
+    private Ubicacion ubicacion;
     
 	public Documentacion() {
 		super();
 	}
 
-	public Documentacion(Long id, String tipoDocumento, String numero, LocalDate fechaIngreso) {
+	public Documentacion(Long id, String tipoDocumento, String numero, LocalDate fechaIngreso, String estado, Legajo legajo, Ubicacion ubicacion) {
 		super();
 		this.id = id;
 		this.tipoDocumento = tipoDocumento;
 		this.numero = numero;
 		this.fechaIngreso = fechaIngreso;
+		this.estado = estado;
+		this.legajo = legajo;
+		this.ubicacion = ubicacion;
 	}
 
 	public Long getId() {
@@ -55,5 +67,29 @@ public class Documentacion {
 
 	public void setFechaIngreso(LocalDate fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public Legajo getLegajo() {
+		return legajo;
+	}
+
+	public void setLegajo(Legajo legajo) {
+		this.legajo = legajo;
+	}
+
+	public Ubicacion getUbicacion() {
+		return ubicacion;
+	}
+
+	public void setUbicacion(Ubicacion ubicacion) {
+		this.ubicacion = ubicacion;
 	}
 }
