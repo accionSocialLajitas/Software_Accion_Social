@@ -15,6 +15,11 @@ public class Beneficio {
     private String estado;
     private String tipoBeneficio;
     
+
+    @ManyToOne
+    @JoinColumn(name = "id_legajo")
+    private Legajo legajo;
+
 	public Beneficio() {
 		super();
 	}
@@ -86,6 +91,16 @@ public class Beneficio {
 	public void setTipoBeneficio(String tipoBeneficio) {
 		this.tipoBeneficio = tipoBeneficio;
 	}
+
+
+	public Legajo getLegajo() {
+		return legajo;
+	}
+
+	public void setLegajo(Legajo legajo) {
+		this.legajo = legajo;
+	}
+
     
 	
     

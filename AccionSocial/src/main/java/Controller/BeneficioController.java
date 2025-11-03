@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.PathVariable;
 
 import Entity.Beneficio;
 import Service.InterBeneficio;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -21,7 +23,12 @@ public class BeneficioController {
     
     @GetMapping("/mostrarlistabeneficios")
     public String detallesBeneficios(Model model) {
-        model.addAttribute("Beneficio", beneficioService.getBeneficio());
+       
+        List<Beneficio> todosBeneficios = beneficioService.getBeneficio();
+        List<Beneficio> beneficiosRegistrados = todosBeneficios.stream()
+            .filter(b -> b.getLegajo() == null) 
+            .collect(java.util.stream.Collectors.toList());
+        model.addAttribute("Beneficio", beneficiosRegistrados);
         return "Vistas/lista_beneficios";
     }
     
