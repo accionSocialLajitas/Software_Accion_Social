@@ -2,31 +2,68 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario Creación de Documentación</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${legajoId != null ? 'Crear Documentación para Legajo - Acción Social' : 'Formulario de Documentación - Acción Social'}">Formulario de Documentación</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .navbar-brand { font-size: 1.4rem; font-weight: 600; }
+        .nav-link { transition: all 0.3s ease; border-radius: 5px; margin: 0 2px; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+        .dropdown-menu { border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .dropdown-item:hover { background-color: #f8f9fa; padding-left: 1.5rem; }
+        .card { border: none; border-radius: 10px; }
+        .btn { border-radius: 6px; transition: all 0.3s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+    </style>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
+    <!-- Navigation -->
+    <nav th:replace="~{Vistas/menu :: menu}"></nav>
+    
+<div class="container mt-4">
     <div class="card shadow p-4">
-        <h3 class="text-center mb-4">Formulario Creación de Documentación</h3>
+        <h3 class="text-center mb-4">
+            <i class="bi bi-file-earmark-plus me-2"></i>Formulario Creación de Documentación
+        </h3>
         
-        <div th:if="${error}" class="alert alert-danger" role="alert">
+        <!-- Información del Legajo si viene desde detalle -->
+        <div th:if="${legajo != null}" class="alert alert-info mb-4">
+            <i class="bi bi-person-fill me-2"></i>
+            <strong>Legajo:</strong> <span th:text="${legajo.nombre + ' ' + legajo.apellido}"></span> - 
+            <strong>DNI:</strong> <span th:text="${legajo.dni}"></span>
+            <p class="mb-0 mt-2">
+                <small>La documentación se asignará automáticamente a este legajo al guardar.</small>
+            </p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
             <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         
         <form th:action="@{/guardardocumentacion}" th:object="${documentacion}" method="post">
             <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:if="${legajoId != null}" name="legajoId" th:value="${legajoId}">
+            <input type="hidden" th:field="*{estado}" th:value="${documentacion.estado != null ? documentacion.estado : 'Pendiente'}">
             
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
-                    <select class="form-control" id="tipoDocumento" th:field="*{tipoDocumento}" required>
+                    <label for="tipoDocumento" class="form-label">
+                        <strong>Tipo de Documento:</strong>
+                    </label>
+                    <select class="form-select" id="tipoDocumento" th:field="*{tipoDocumento}" required>
                         <option value="">Seleccione un tipo</option>
                         <option value="DNI">DNI</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                        <option value="Cédula">Cédula</option>
                         <option value="Partida de Nacimiento">Partida de Nacimiento</option>
                         <option value="Cedula de Recidencia">Cedula de Recidencia</option>
                         <option value="Licencia de Conducir">Licencia de Conducir</option>
                         <option value="Certificado de Convivencia">Certificado de Convivencia</option>
+                        <option value="Certificado de Nacimiento">Certificado de Nacimiento</option>
+                        <option value="Certificado de Matrimonio">Certificado de Matrimonio</option>
                         <option value="Turno Medico">Turno Medico</option>
                         <option value="Receta Medica">Receta Medica</option>
                         <option value="Oficio de Trabajo">Oficio de Trabajo</option>
@@ -36,7 +73,9 @@
                 </div>
                 
                 <div class="col-md-6 mb-3">
-                    <label for="numero" class="form-label">Número de Documento</label>
+                    <label for="numero" class="form-label">
+                        <strong>Número de Documento:</strong>
+                    </label>
                     <input type="text" class="form-control" id="numero" th:field="*{numero}" 
                            placeholder="Ingrese el número del documento" required>
                 </div>
@@ -44,17 +83,75 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="fechaIngreso" class="form-label">Fecha de Ingreso</label>
-                    <input type="date" class="form-control" id="fechaIngreso" th:field="*{fechaIngreso}" required>
+                    <label for="fechaIngreso" class="form-label">
+                        <strong>Fecha de Ingreso:</strong>
+                    </label>
+                    <input type="date" class="form-control" id="fechaIngreso" 
+                           th:field="*{fechaIngreso}" 
+                           th:value="${documentacion.fechaIngreso != null ? #temporals.format(documentacion.fechaIngreso, 'yyyy-MM-dd') : #temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" 
+                           required>
                 </div>
             </div>
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary px-5">Guardar Documentación</button>
-                <a th:href="@{/mostrarlistadocumentacion}" class="btn btn-secondary px-5 ms-2">Cancelar</a>
+          
+            <div class="card mt-3 mb-3" style="background-color: #f8f9fa;">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="m-0"><i class="bi bi-folder me-2"></i>Ubicación Física</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="archivo" class="form-label">
+                                <strong>Archivo:</strong>
+                            </label>
+                            <input type="text" class="form-control" id="archivo" name="archivo" 
+                                   th:value="${documentacion.ubicacion != null ? documentacion.ubicacion.archivo : ''}"
+                                   placeholder="Ej: Archivo 1">
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="carpeta" class="form-label">
+                                <strong>Carpeta:</strong>
+                            </label>
+                            <input type="text" class="form-control" id="carpeta" name="carpeta" 
+                                   th:value="${documentacion.ubicacion != null ? documentacion.ubicacion.carpeta : ''}"
+                                   placeholder="Ej: Carpeta A">
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="folio" class="form-label">
+                                <strong>Folio:</strong>
+                            </label>
+                            <input type="text" class="form-control" id="folio" name="folio" 
+                                   th:value="${documentacion.ubicacion != null ? documentacion.ubicacion.folio : ''}"
+                                   placeholder="Ej: Folio 123">
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">
+                        <i class="bi bi-info-circle me-1"></i>Ingrese la ubicación física donde se encuentra almacenado el documento físico.
+                    </small>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-save me-2"></i>Guardar Documentación
+                </button>
+                <a th:if="${legajoId != null}" th:href="@{/detallelegajo/{id}(id=${legajoId})}" class="btn btn-secondary btn-lg px-5 ms-2">
+                    <i class="bi bi-x-circle me-2"></i>Cancelar
+                </a>
+                <a th:if="${legajoId == null}" th:href="@{/mostrarlistadocumentacion}" class="btn btn-secondary btn-lg px-5 ms-2">
+                    <i class="bi bi-x-circle me-2"></i>Cancelar
+                </a>
             </div>
         </form>
     </div>
 </div>
+
+   
+    <footer th:replace="~{Vistas/menu :: footer}"></footer>
+    
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
