@@ -3,6 +3,7 @@ package Entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 /**
@@ -27,10 +28,17 @@ public class Legajo {
     private String discapacidad;
     private String adulto_mayor;
     private String estado;
+    private Boolean activo = true; // Para borrado lógico
     
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_direccion")
     private Direccion direccion;
+    
+    @OneToMany(mappedBy = "legajo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Beneficio> beneficios;
+    
+    @OneToMany(mappedBy = "legajo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Documentacion> documentaciones;
 
 	public Legajo() {
 		super();
@@ -176,7 +184,31 @@ public class Legajo {
 	public void setDireccion(Direccion direccion) {
 		this.direccion = direccion;
 	}
-    
-    
 
+	public List<Beneficio> getBeneficios() {
+		return beneficios;
+	}
+
+	public void setBeneficios(List<Beneficio> beneficios) {
+		this.beneficios = beneficios;
+	}
+
+	public List<Documentacion> getDocumentaciones() {
+		return documentaciones;
+	}
+
+	public void setDocumentaciones(List<Documentacion> documentaciones) {
+		this.documentaciones = documentaciones;
+	}
+
+	public Boolean getActivo() {
+		return activo;
+	}
+
+	public void setActivo(Boolean activo) {
+		this.activo = activo;
+	}
+    
+    
+    
 }
