@@ -2,11 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Formulario Creacion de Beneficio</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .navbar-brand { font-size: 1.4rem; font-weight: 600; }
+        .nav-link { transition: all 0.3s ease; border-radius: 5px; margin: 0 2px; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+        .dropdown-menu { border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .dropdown-item:hover { background-color: #f8f9fa; padding-left: 1.5rem; }
+        .card { border: none; border-radius: 10px; }
+        .btn { border-radius: 6px; transition: all 0.3s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+    </style>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
+   
+    <nav th:replace="~{Vistas/menu :: menu}"></nav>
+    
+<div class="container mt-4">
     <div class="card shadow p-4">
         <h3 class="text-center mb-4">Formulario  Creacion de Beneficio</h3>
         
@@ -14,7 +32,7 @@
             <span th:text="${error}"></span>
         </div>
         
-        
+
         <div class="row mb-4">
             <div class="col-md-12">
                 <label class="form-label"><strong>Tipo de Beneficio:</strong></label>
@@ -46,7 +64,7 @@
 			    </div>
 
 			    <div class="row">
-			        
+
 			        <div th:if="${tipo == 'cantidad'}" class="col-md-6 mb-3">
 			            <label for="cantidadDisponible" class="form-label">Ingrese Cantidad</label>
 			            <input type="number" class="form-control" id="cantidadDisponible" min="0" 
@@ -79,5 +97,11 @@
         </form>
     </div>
 </div>
+
+   
+    <footer th:replace="~{Vistas/menu :: footer}"></footer>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
