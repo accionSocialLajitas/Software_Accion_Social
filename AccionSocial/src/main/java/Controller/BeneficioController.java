@@ -4,9 +4,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+<<<<<<< HEAD
 
 import org.springframework.web.bind.annotation.RequestParam;
+=======
+<<<<<<< HEAD
+import org.springframework.web.bind.annotation.RequestParam;
+=======
+>>>>>>> 2f9a6ecf3d4295036cfc247a770cdd6075c57955
 import org.springframework.web.bind.annotation.PathVariable;
+>>>>>>> 51cfce491bb69e371c163b35b9dec7a3ab7648c9
 
 import Entity.Beneficio;
 import Service.InterBeneficio;
