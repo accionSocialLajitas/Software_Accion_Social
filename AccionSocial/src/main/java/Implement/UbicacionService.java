@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Entity.Ubicacion;
-import Entity.UsuarioSocial;
 import Repository.UbicacionRepository;
 import Service.InterUbicacion;
 
