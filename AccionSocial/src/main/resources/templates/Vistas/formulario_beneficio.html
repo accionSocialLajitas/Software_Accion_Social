@@ -2,11 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Formulario Creacion de Beneficio</title>
-
+    <title>Formulario de Beneficio - Acción Social</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
@@ -32,7 +29,7 @@
             <span th:text="${error}"></span>
         </div>
         
-
+        
         <div class="row mb-4">
             <div class="col-md-12">
                 <label class="form-label"><strong>Tipo de Beneficio:</strong></label>
@@ -64,7 +61,7 @@
 			    </div>
 
 			    <div class="row">
-
+			        
 			        <div th:if="${tipo == 'cantidad'}" class="col-md-6 mb-3">
 			            <label for="cantidadDisponible" class="form-label">Ingrese Cantidad</label>
 			            <input type="number" class="form-control" id="cantidadDisponible" min="0" 

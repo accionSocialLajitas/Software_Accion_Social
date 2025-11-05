@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import Entity.Beneficio;
 import Service.InterLegajo;
 import Service.InterBeneficio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,13 @@ public class HomeController {
        
         try {
             long totalLegajos = legajoService.getLegajo().size();
-            long totalBeneficios = beneficioService.getBeneficio().stream()
-                .filter(b -> b.getLegajo() == null)
-                .count();
+        long totalBeneficios = 0;
+            for (Beneficio beneficio : beneficioService.getBeneficio()) {
+            if (beneficio.getLegajo() == null) {
+                totalBeneficios++;
+            }
+        }
+
             
             model.addAttribute("totalLegajos", totalLegajos);
             model.addAttribute("totalBeneficios", totalBeneficios);

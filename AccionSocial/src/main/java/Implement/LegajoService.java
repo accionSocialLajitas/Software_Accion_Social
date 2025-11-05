@@ -72,7 +72,6 @@ public Legajo Guardar(Legajo legajo) {
 	    boolean hayCambios = false;
 	    int contadorCampos = 0;
 	    
-	    // Comparar campos principales
 	    if (!comparaValor(legajoAnterior.getNombre(), legajoGuardado.getNombre())) {
 	        if (contadorCampos > 0) camposEditados.append(", ");
 	        camposEditados.append("Nombre");
@@ -158,7 +157,7 @@ public Legajo Guardar(Legajo legajo) {
 	        contadorCampos++;
 	    }
 	    
-	    // Comparar dirección
+	    
 	    if (legajoAnterior.getDireccion() != null && legajoGuardado.getDireccion() != null) {
 	        Direccion dirAnterior = legajoAnterior.getDireccion();
 	        Direccion dirNueva = legajoGuardado.getDireccion();
@@ -198,8 +197,6 @@ public Legajo Guardar(Legajo legajo) {
 	        contadorCampos++;
 	    }
 	    
-	    // Registrar en historial siempre que se edite un legajo
-	    // Mostrar qué campos fueron editados y los detalles de los cambios
 	    Historial historial = new Historial();
 	    historial.setLegajo(legajoGuardado);
 	    historial.setTipoEvento("LEGAJO_EDITADO");
@@ -218,7 +215,7 @@ public Legajo Guardar(Legajo legajo) {
 	return legajoGuardado;
 }
 
-// Método auxiliar para comparar valores considerando null
+
 private boolean comparaValor(String valor1, String valor2) {
     if (valor1 == null && valor2 == null) return true;
     if (valor1 == null || valor2 == null) return false;

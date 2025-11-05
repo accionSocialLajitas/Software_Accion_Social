@@ -27,7 +27,7 @@
             <a th:href="@{/mostrarlista}" class="btn btn-secondary">Ver Casos</a>
         </div>
         
-        <!-- Filtros -->
+      
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="btn-group" role="group">
@@ -40,7 +40,7 @@
             </div>
         </div>
         
-        <!-- Tabla de Turnos -->
+       
         <div th:if="${turnos != null and !turnos.isEmpty()}">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped align-middle" id="tablaTurnos">
@@ -102,12 +102,12 @@
             </div>
         </div>
         
-        <!-- Sin turnos -->
+       
         <div th:if="${turnos == null or turnos.isEmpty()}" class="text-center text-muted mt-4">
             <p>No hay turnos registrados en el sistema.</p>
         </div>
         
-        <!-- Botones de navegación -->
+      
         <div class="text-center mt-4">
             <a th:href="@{/mostrarlista}" class="btn btn-secondary">Volver a Casos</a>
         </div>

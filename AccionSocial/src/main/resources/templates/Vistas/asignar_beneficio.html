@@ -109,7 +109,7 @@
         console.log('Beneficio seleccionado ID:', beneficioId);
         
         if (beneficioId) {
-            // Buscar beneficio por ID (puede ser número o string)
+     
             const beneficio = beneficios.find(b => {
                 const bId = b.id ? (typeof b.id === 'string' ? parseInt(b.id) : b.id) : null;
                 const selId = typeof beneficioId === 'string' ? parseInt(beneficioId) : beneficioId;
@@ -130,12 +130,12 @@
                 `;
                 infoDiv.style.display = 'block';
                 
-                // Determinar tipo de beneficio
+               
                 const esBeneficioMonto = beneficio.tipoBeneficio === 'fondos' || beneficio.tipoBeneficio === 'monto';
                 console.log('Es beneficio monto:', esBeneficioMonto);
                 
                 if (esBeneficioMonto) {
-                    // Beneficio de tipo monto: mostrar solo monto, ocultar cantidad
+            
                     divCantidad.style.display = 'none';
                     divMonto.style.display = 'block';
                     divMonto.className = 'col-md-12';
@@ -154,7 +154,7 @@
                     montoInput.value = '';
                     console.log('Mostrando campo monto');
                 } else {
-                    // Beneficio de tipo cantidad: mostrar solo cantidad, ocultar monto
+                  
                     divCantidad.style.display = 'block';
                     divMonto.style.display = 'none';
                     divCantidad.className = 'col-md-12';
@@ -172,7 +172,7 @@
                         cantidadHint.textContent = 'Ingrese la cantidad exacta que desea asignar (máximo disponible: ' + cantMax + ')';
                     }
                     
-                    // Ocultar y limpiar campo de monto para beneficios de tipo cantidad
+                    
                     montoInput.removeAttribute('required');
                     montoInput.removeAttribute('name');
                     montoInput.value = '';
@@ -193,7 +193,7 @@
         }
     }
     
-    // Validar antes de enviar el formulario
+    
     document.querySelector('form').addEventListener('submit', function(e) {
         const select = document.getElementById('beneficioId');
         const beneficioId = select.value;
@@ -231,8 +231,7 @@
                     cantidadInput.focus();
                     return false;
                 }
-                // Para beneficios de tipo cantidad, asegurar que monto no se envíe o sea 0
-                // El campo de monto está oculto, así que no se enviará en el formulario
+               
             }
         }
     });

@@ -15,7 +15,7 @@
         </div>
         
         <form th:action="@{/guardarusuarios}" th:object="${usuarioSocial}" method="post">
-            <!-- Campo oculto para el ID (necesario para edición) -->
+           
             <input type="hidden" th:field="*{id}">
             
             <div class="row">

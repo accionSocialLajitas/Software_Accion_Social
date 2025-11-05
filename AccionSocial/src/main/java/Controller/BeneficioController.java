@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
-
 import org.springframework.web.bind.annotation.PathVariable;
 
 import Entity.Beneficio;
 import Service.InterBeneficio;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,13 +22,28 @@ public class BeneficioController {
     private InterBeneficio beneficioService;
     
     @GetMapping("/mostrarlistabeneficios")
-    public String detallesBeneficios(Model model) {
-       
+    public String detallesBeneficios(
+            @RequestParam(required = false) Long legajo,
+            Model model) {
+        
         List<Beneficio> todosBeneficios = beneficioService.getBeneficio();
-        List<Beneficio> beneficiosRegistrados = todosBeneficios.stream()
-            .filter(b -> b.getLegajo() == null) 
-            .collect(java.util.stream.Collectors.toList());
-        model.addAttribute("Beneficio", beneficiosRegistrados);
+        List<Beneficio> beneficiosFiltrados = new ArrayList<>();
+        
+        if (legajo != null) {
+            for (Beneficio beneficio : todosBeneficios) {
+                if (legajo.equals(beneficio.getLegajo().getId()))    {
+                    beneficiosFiltrados.add(beneficio);
+                }
+            }
+        } else {
+            for (Beneficio beneficio : todosBeneficios) {
+                if (beneficio.getLegajo() == null) {
+                    beneficiosFiltrados.add(beneficio);
+                }
+            }
+        }
+        
+        model.addAttribute("Beneficio", beneficiosFiltrados);
         return "Vistas/lista_beneficios";
     }
     

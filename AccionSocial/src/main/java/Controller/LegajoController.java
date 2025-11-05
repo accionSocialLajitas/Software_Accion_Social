@@ -24,12 +24,9 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.Optional;
+import java.util.ArrayList;
 import java.util.List;
-
-
-
-
+import java.util.Optional;
 
 @Controller
 @SessionAttributes({"legajo", "direccion","turno"})
@@ -51,7 +48,6 @@ public class LegajoController {
 	 @GetMapping("/mostrarlista")
 	    public String DetallesPersonas(@RequestParam(required = false) String dni, Model model) {
 	        if (dni != null && !dni.trim().isEmpty()) {
-	            // Buscar por DNI
 	            Legajo legajoEncontrado = LegajoService.buscarLegajoPorDni(dni.trim());
 	            if (legajoEncontrado != null) {
 	                model.addAttribute("Legajo", List.of(legajoEncontrado));
@@ -62,7 +58,6 @@ public class LegajoController {
 	                model.addAttribute("mensaje", "No se encontró ningún legajo con el DNI: " + dni.trim());
 	            }
 	        } else {
-	            // Mostrar todos los legajos
 	            model.addAttribute("Legajo", LegajoService.getLegajo());
 	        }
 	        return "Vistas/lista_legajos";
@@ -92,14 +87,12 @@ public class LegajoController {
 	            
 	            
 	            
-	            //LegajoService.Guardar(legajo);
 	            model.addAttribute("legajo", legajo);
 	            return "redirect:/formulario/direccion";
 	        }
 	        
 	        @GetMapping("/formulario/direccion")
         public String paso2(Legajo legajo, Model model) {
-            // Si el legajo tiene una dirección existente (estamos editando), usarla
             Direccion direccion = (legajo != null && legajo.getDireccion() != null) 
                 ? legajo.getDireccion() 
                 : new Direccion();
@@ -163,14 +156,10 @@ public class LegajoController {
 	        
 	        @PostMapping("/guardar-todo-aprobacion")
 	        public String guardarTodoAprobacion(Legajo legajo, Direccion direccion, SessionStatus status) {
-            // Si el legajo tiene ID y dirección existente, estamos editando
             if (legajo.getId() != null && legajo.getDireccion() != null) {
-                // Si no se proporciona dirección nueva o está vacía, mantener la existente
                 if (direccion == null || (direccion.getCalle() == null || direccion.getCalle().isEmpty())) {
-                    // Mantener la dirección existente - no hacer nada
                     direccion = legajo.getDireccion();
                 } else {
-                    // Actualizar la dirección existente con los nuevos valores
                     Direccion direccionExistente = legajo.getDireccion();
                     direccionExistente.setCalle(direccion.getCalle());
                     direccionExistente.setLocalidad(direccion.getLocalidad());
@@ -179,7 +168,6 @@ public class LegajoController {
                 }
             }
             
-            // Asignar dirección al legajo
 	            legajo.setDireccion(direccion);
 	          
             LegajoService.Guardar(legajo);
@@ -191,14 +179,10 @@ public class LegajoController {
 	        
 	        @PostMapping("/guardar-todo-turno")
 	        public String guardarTodoTurno(Legajo legajo, Direccion direccion, Turno turno, SessionStatus status) {
-            // Si el legajo tiene ID y dirección existente, estamos editando
             if (legajo.getId() != null && legajo.getDireccion() != null) {
-                // Si no se proporciona dirección nueva o está vacía, mantener la existente
                 if (direccion == null || (direccion.getCalle() == null || direccion.getCalle().isEmpty())) {
-                    // Mantener la dirección existente
                     direccion = legajo.getDireccion();
                 } else {
-                    // Actualizar la dirección existente con los nuevos valores
                     Direccion direccionExistente = legajo.getDireccion();
                     direccionExistente.setCalle(direccion.getCalle());
                     direccionExistente.setLocalidad(direccion.getLocalidad());
@@ -207,7 +191,6 @@ public class LegajoController {
                 }
             }
             
-            // Asignar dirección al legajo
 	            legajo.setDireccion(direccion);
 
             Legajo legajoGuardado = LegajoService.Guardar(legajo);
@@ -233,12 +216,11 @@ public class LegajoController {
 	            Optional<Legajo> legajoOp = LegajoService.Busquedaporid(id);
 	            if (legajoOp.isPresent()) {
 	                Legajo legajo = legajoOp.get();
-	                // Forzar carga de relaciones lazy de forma individual para evitar MultipleBagFetchException
 	                if (legajo.getBeneficios() != null) {
-	                    legajo.getBeneficios().size(); // Carga beneficios
+	                    legajo.getBeneficios().size();
 	                }
 	                if (legajo.getDocumentaciones() != null) {
-	                    legajo.getDocumentaciones().size(); // Carga documentaciones
+	                    legajo.getDocumentaciones().size(); 
 	                }
 	                model.addAttribute("legajo", legajo);
 	                return "Vistas/detalle_legajo";
@@ -247,61 +229,44 @@ public class LegajoController {
 	        }
 	        
 	        @GetMapping("/asignarbeneficio/{id}")
-	        public String mostrarAsignarBeneficio(@PathVariable Long id, Model model) {
-	            Optional<Legajo> legajoOp = LegajoService.Busquedaporid(id);
-	            if (legajoOp.isPresent()) {
-	                Legajo legajo = legajoOp.get();
-	                model.addAttribute("legajo", legajo);
-	                // Obtener beneficios disponibles (beneficios originales/plantilla sin asignar)
-	                // Un beneficio disponible debe ser un beneficio "plantilla" que:
-	                // 1. No tenga legajo asignado (es el original/plantilla)
-	                // 2. No esté inactivo
-	                // 3. No tenga estado "Asignado" (ese es solo para copias asignadas a legajos)
-	                // 4. Dependiendo del tipo:
-	                //    - Tipo "cantidad": debe tener cantidadDisponible > 0
-	                //    - Tipo "fondos" o "monto": debe tener monto > 0
-	                List<Beneficio> todosBeneficios = BeneficioService.getBeneficio();
-	                List<Beneficio> beneficiosDisponibles = todosBeneficios.stream()
-	                    .filter(b -> {
-	                        // Excluir si tiene legajo asignado (son copias asignadas)
-	                        if (b.getLegajo() != null) {
-	                            return false;
-	                        }
-	                        
-	                        // Excluir si está inactivo
-	                        if (b.getEstado() != null && "Inactivo".equals(b.getEstado())) {
-	                            return false;
-	                        }
-	                        
-	                        // Excluir si tiene estado "Asignado" (son copias)
-	                        if (b.getEstado() != null && "Asignado".equals(b.getEstado())) {
-	                            return false;
-	                        }
-	                        
-	                        // Verificar disponibilidad según el tipo de beneficio
-	                        String tipoBeneficio = b.getTipoBeneficio();
-					        
-					        if (tipoBeneficio != null && ("fondos".equals(tipoBeneficio) || "monto".equals(tipoBeneficio))) {
-					            // Beneficio de tipo monto/fondos: debe tener monto > 0
-					            if (b.getMonto() == null || b.getMonto() <= 0) {
-					                return false;
-					            }
-					        } else {
-					            // Beneficio de tipo cantidad: debe tener cantidadDisponible > 0
-					            if (b.getCantidadDisponible() <= 0) {
-					                return false;
-					            }
-					        }
-	                        
-	                        // Si pasa todos los filtros, es un beneficio disponible
-	                        return true;
-	                    })
-	                    .collect(java.util.stream.Collectors.toList());
-	                model.addAttribute("beneficiosDisponibles", beneficiosDisponibles);
-	                return "Vistas/asignar_beneficio";
-	            }
-	            return "redirect:/mostrarlista";
-	        }
+        public String mostrarAsignarBeneficio(@PathVariable Long id, Model model) {
+            Optional<Legajo> legajoOp = LegajoService.Busquedaporid(id);
+            if (legajoOp.isPresent()) {
+                Legajo legajo = legajoOp.get();
+                model.addAttribute("legajo", legajo);
+               
+                List<Beneficio> todosBeneficios = BeneficioService.getBeneficio();
+                List<Beneficio> beneficiosDisponibles = new ArrayList<>();
+                
+                for (Beneficio b : todosBeneficios) {
+                    if (b.getLegajo() != null) {
+                        continue;
+                    }
+                    
+                    if (b.getEstado() != null && ("Inactivo".equals(b.getEstado()) || "Asignado".equals(b.getEstado()))) {
+                        continue;
+                    }
+                    
+                    String tipoBeneficio = b.getTipoBeneficio();
+                    
+                    if (tipoBeneficio != null && ("fondos".equals(tipoBeneficio) || "monto".equals(tipoBeneficio))) {
+                        if (b.getMonto() == null || b.getMonto() <= 0) {
+                            continue;
+                        }
+                    } else {
+                        if (b.getCantidadDisponible() <= 0) {
+                            continue;
+                        }
+                    }
+                    
+                    beneficiosDisponibles.add(b);
+                }
+                
+                model.addAttribute("beneficiosDisponibles", beneficiosDisponibles);
+                return "Vistas/asignar_beneficio";
+            }
+            return "redirect:/mostrarlista";
+        }
 	        
         @PostMapping("/asignarbeneficio/{legajoId}")
         public String asignarBeneficio(@PathVariable Long legajoId, 
@@ -333,23 +298,33 @@ public class LegajoController {
                 } catch (RuntimeException e) {
                     model.addAttribute("error", e.getMessage());
                     model.addAttribute("legajo", legajoOp.get());
-                    // Recargar beneficios disponibles
                     List<Beneficio> todosBeneficios = BeneficioService.getBeneficio();
-                    List<Beneficio> beneficiosDisponibles = todosBeneficios.stream()
-                        .filter(b -> {
-                            if (b.getLegajo() != null) return false;
-                            if (b.getEstado() != null && "Inactivo".equals(b.getEstado())) return false;
-                            if (b.getEstado() != null && "Asignado".equals(b.getEstado())) return false;
-                            
-                            String tipoBeneficio = b.getTipoBeneficio();
-                            if (tipoBeneficio != null && ("fondos".equals(tipoBeneficio) || "monto".equals(tipoBeneficio))) {
-                                if (b.getMonto() == null || b.getMonto() <= 0) return false;
-                            } else {
-                                if (b.getCantidadDisponible() <= 0) return false;
+                    List<Beneficio> beneficiosDisponibles = new ArrayList<>();
+                    
+                    for (Beneficio b : todosBeneficios) {
+                        if (b.getLegajo() != null) {
+                            continue;
+                        }
+                        
+                        if (b.getEstado() != null && ("Inactivo".equals(b.getEstado()) || "Asignado".equals(b.getEstado()))) {
+                            continue;
+                        }
+                        
+                        String tipoBeneficio = b.getTipoBeneficio();
+                        
+                        if (tipoBeneficio != null && ("fondos".equals(tipoBeneficio) || "monto".equals(tipoBeneficio))) {
+                            if (b.getMonto() == null || b.getMonto() <= 0) {
+                                continue;
                             }
-                            return true;
-                        })
-                        .collect(java.util.stream.Collectors.toList());
+                        } else {
+                            if (b.getCantidadDisponible() <= 0) {
+                                continue;
+                            }
+                        }
+                        
+                        beneficiosDisponibles.add(b);
+                    }
+                    
                     model.addAttribute("beneficiosDisponibles", beneficiosDisponibles);
                     return "Vistas/asignar_beneficio";
                 }
@@ -367,22 +342,29 @@ public class LegajoController {
 	            return "redirect:/mostrarlista";
 	        }
 	        
+			
 	        @GetMapping("/asignardocumentacion/{id}")
-	        public String mostrarAsignarDocumentacion(@PathVariable Long id, Model model) {
-	            Optional<Legajo> legajoOp = LegajoService.Busquedaporid(id);
-	            if (legajoOp.isPresent()) {
-	                Legajo legajo = legajoOp.get();
-	                model.addAttribute("legajo", legajo);
-	                // Obtener documentaciones disponibles (sin legajo asignado)
-	                List<Documentacion> todasDocumentaciones = DocumentacionService.getDocumentacion();
-	                List<Documentacion> documentacionesDisponibles = todasDocumentaciones.stream()
-	                    .filter(d -> d.getLegajo() == null)
-	                    .collect(java.util.stream.Collectors.toList());
-	                model.addAttribute("documentacionesDisponibles", documentacionesDisponibles);
-	                return "Vistas/asignar_documentacion";
-	            }
-	            return "redirect:/mostrarlista";
-	        }
+        public String mostrarAsignarDocumentacion(@PathVariable Long id, Model model) {
+            Optional<Legajo> legajoOp = LegajoService.Busquedaporid(id);
+            if (legajoOp.isPresent()) {
+                Legajo legajo = legajoOp.get();
+                model.addAttribute("legajo", legajo);
+               
+                List<Documentacion> todasDocumentaciones = DocumentacionService.getDocumentacion();
+                List<Documentacion> documentacionesDisponibles = new ArrayList<>();
+                
+                for (Documentacion doc : todasDocumentaciones) {
+                    if (doc.getLegajo() == null) {
+                        documentacionesDisponibles.add(doc);
+                    }
+                }
+                
+                model.addAttribute("documentacionesDisponibles", documentacionesDisponibles);
+                return "Vistas/asignar_documentacion";
+            }
+            return "redirect:/mostrarlista";
+        }
+
 	        
 	        @PostMapping("/asignardocumentacion/{legajoId}")
 	        public String asignarDocumentacion(@PathVariable Long legajoId, 
@@ -399,12 +381,12 @@ public class LegajoController {
 	                    Documentacion documentacion = documentacionOp.get();
 	                    Legajo legajo = legajoOp.get();
 	                    
-	                    // Verificar que la documentación no esté ya asignada
+	      
 	                    if (documentacion.getLegajo() != null) {
 	                        throw new RuntimeException("Esta documentación ya está asignada a otro legajo");
 	                    }
 	                    
-	                    // Validar estado
+	                  
 	                    if (estado == null || estado.isEmpty()) {
 	                        throw new RuntimeException("Debe seleccionar un estado para la documentación");
 	                    }
@@ -413,23 +395,23 @@ public class LegajoController {
 	                        throw new RuntimeException("El estado debe ser 'Pendiente' o 'Entregado'");
 	                    }
 	                    
-	                    // Asignar documentación al legajo y actualizar estado
+	                   
 	                    documentacion.setLegajo(legajo);
 	                    documentacion.setEstado(estado);
 	                    
-	                    // Si se proporciona una fecha de asignación, actualizar fecha de ingreso
+	                    
 	                    if (fechaAsignacion != null && !fechaAsignacion.isEmpty()) {
 	                        try {
 	                            java.time.LocalDate fecha = java.time.LocalDate.parse(fechaAsignacion);
 	                            documentacion.setFechaIngreso(fecha);
 	                        } catch (Exception e) {
-	                            // Si hay error al parsear la fecha, mantener la fecha actual
+	                         
 	                        }
 	                    }
 	                    
 	                    DocumentacionService.Guardar(documentacion);
 	                    
-	                    // Registrar en historial
+	                   
 	                    Historial historial = new Historial();
 	                    historial.setLegajo(legajo);
 	                    historial.setTipoEvento("DOCUMENTACION_ASIGNADA");
@@ -447,11 +429,14 @@ public class LegajoController {
 	                } catch (RuntimeException e) {
 	                    model.addAttribute("error", e.getMessage());
 	                    model.addAttribute("legajo", legajoOp.get());
-	                    // Recargar documentaciones disponibles
 	                    List<Documentacion> todasDocumentaciones = DocumentacionService.getDocumentacion();
-	                    List<Documentacion> documentacionesDisponibles = todasDocumentaciones.stream()
-	                        .filter(d -> d.getLegajo() == null)
-	                        .collect(java.util.stream.Collectors.toList());
+	                    List<Documentacion> documentacionesDisponibles = new ArrayList<>();
+                        
+                        for (Documentacion doc : todasDocumentaciones) {
+                            if (doc.getLegajo() == null) {
+                                documentacionesDisponibles.add(doc);
+                            }
+                        }
 	                    model.addAttribute("documentacionesDisponibles", documentacionesDisponibles);
 	                    return "Vistas/asignar_documentacion";
 	                }

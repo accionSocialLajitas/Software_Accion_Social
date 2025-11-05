@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import Entity.Ubicacion;
+import java.util.Optional;
 import Service.InterUbicacion;
 
 
@@ -39,12 +40,12 @@ public class UbicacionController {
     
     @GetMapping("/editarubicacion/{id}")
     public String editarUbicacion(@PathVariable Long id, Model model) {
-        Ubicacion ubicacion = ubicacionService.Busquedaporid(id).orElse(null);
-        if (ubicacion != null) {
-            model.addAttribute("ubicacion", ubicacion);
-            return "Vistas/formulario_ubicacion";
-        }
-        return "redirect:/mostrarlistaubicacion";
+        Optional<Ubicacion> ubicacionOpt = ubicacionService.Busquedaporid(id);
+if (ubicacionOpt.isPresent()) {
+    model.addAttribute("ubicacion", ubicacionOpt.get());
+    return "Vistas/formulario_ubicacion";
+}
+return "redirect:/mostrarlistaubicacion";
     }
     
     
